@@ -118,15 +118,15 @@ function m_onmove(e) {
     } else if (info.protection > 0) { removeCursor() }
 }
 w.on('cursorMove', m_onmove);
-unloadTilesAuto = false;
 var m_fetchDataRaw;
 var m_fetchData;
-if (state.worldModel.name == 'misplaced.') {
-    m_fetchDataRaw = await fetch("https://api.github.com/repos/LimeSlime888/misplaced./contents/fetch_areas.txt?raw=true").then(e=>e.json()).content;
-    m_fetchDataRaw = atob(m_fetchDataRaw);
+async function m_refetch() {
+    m_fetchDataRaw = await fetch("https://api.github.com/repos/LimeSlime888/mis------./contents/fetch_areas.txt?raw=true").then(e=>e.json());
+    m_fetchDataRaw = atob(m_fetchDataRaw.content);
     m_fetchData = m_fetchDataRaw.split('\n');
     m_fetchData = m_fetchData.map(e=>e.split(','));
     for (let range of m_fetchData) {
       network.fetch({minX: range[0], maxY: range[1], minY: range[2], maxY: range[3]});
     }
 }
+m_refetch();
