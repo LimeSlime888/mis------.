@@ -88,6 +88,7 @@ function m_writemod(e) {
 }
 w.on('writeBefore', m_writemod);
 state.userModel.is_owner = true;
+var m_safeguard = true;
 function m_onmove(e) {
     let [x, y] = convertTileToXY(e.tileX, e.tileY, e.charX, e.charY);
     let info = getCharInfoXY(x, y);
@@ -115,7 +116,7 @@ function m_onmove(e) {
             renderCursor(convertXYtoTile(cx, cy));
         }
         w.doGoToCoord(ly, lx);
-    } else if (info.protection > 0) { removeCursor() }
+    } else if (m_safeguard && info.protection > 0) { removeCursor() }
 }
 w.on('cursorMove', m_onmove);
 var m_fetchDataRaw;
