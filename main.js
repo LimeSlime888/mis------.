@@ -126,7 +126,7 @@ async function m_refetch() {
     m_fetchData = m_fetchDataRaw.split('\n');
     m_fetchData = m_fetchData.map(e=>e.split(','));
     for (let range of m_fetchData) {
-      network.fetch({minX: range[0], maxY: range[1], minY: range[2], maxY: range[3]});
+      network.fetch({minX: range[0], maxX: range[1], minY: range[2], maxY: range[3]});
     }
 }
 m_refetch();
