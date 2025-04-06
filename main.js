@@ -125,7 +125,7 @@ if (state.worldModel.name == 'misplaced.') {
     m_fetchDataRaw = await fetch("https://api.github.com/repos/LimeSlime888/misplaced./contents/fetch_areas.txt?raw=true").then(e=>e.json()).content;
     m_fetchDataRaw = atob(m_fetchDataRaw);
     m_fetchData = m_fetchDataRaw.split('\n');
-    m_fetchData = m_fetchData.map(e=>e.split(';'));
+    m_fetchData = m_fetchData.map(e=>e.split(','));
     for (let range of m_fetchData) {
       network.fetch({minX: range[0], maxY: range[1], minY: range[2], maxY: range[3]});
     }
