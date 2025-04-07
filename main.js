@@ -130,11 +130,13 @@ function m_makeAudioModal() {
     modal.inputField.style.gridTemplateColumns = '';
     m_ambience = new Audio();
     m_ambience.loop = true;
+	m_ambience.controls = true;
     let ainfob = document.createElement('b');
     ainfob.innerText = 'ambience: ';
     m_ambienceInfo = document.createElement('span');
     m_music = new Audio();
     m_music.loop = true;
+	m_music.controls = true;
     let minfob = document.createElement('b');
     minfob.innerText = 'music: ';
     m_musicInfo = document.createElement('span');
