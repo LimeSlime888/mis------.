@@ -89,11 +89,12 @@ function m_writemod(e) {
 w.on('writeBefore', m_writemod);
 state.userModel.is_owner = true;
 var m_safeguard = true;
+var m_linkWarp = true;
 function m_onmove(e) {
     let [x, y] = convertTileToXY(e.tileX, e.tileY, e.charX, e.charY);
     let info = getCharInfoXY(x, y);
     let link = getLinkXY(x, y);
-    if (link && link.type == 'coord' && info.protection > 0) {
+    if (m_linkWarp && link && link.type == 'coord' && info.protection > 0) {
         let [lx, ly] = [link.link_tileX, link.link_tileY];
         let [cx, cy] = [lx*4*tileC - .5, -ly*4*tileR - .5];
         if (!(cx == Math.floor(cx) && cy == Math.floor(cy))) {
