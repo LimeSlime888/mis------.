@@ -1,5 +1,7 @@
 fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/owotutilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
 fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/utilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
+w.nightMode = 1;
+elm.owot.classList.add('nightmode');
 var m_lookupDiv64 = "0abcdefghijklmnopqrstuvwxyzαβγδεζηθικλμνξøπρςτυφχψωϗϐϑϒϕϖϙϛϝϟϡϣϥϧABCDEFGHIJKLMNOPQRSTUVWXYZÆʙΓΔɞʘŋΘıʞΛɱʌΞØΠþΣʇʊΦʔΨΩϏЂЄЉЊЋϘϚϜϞϠϢϤϦ";
 var m_lookupDiv16Add2 = "2бвгджзи҂лмнптцчшщъыьэюя≈ђєљњћџѡѣѥѧѩѫѭѯѳѻѵҁҍҏґғҕҗҙқҝҟҡңҥѹҧҩҭұҳҵҷҹ";
 var m_lookup = {
@@ -192,20 +194,23 @@ function distanceFromRectangle(px, py, rx, ry, rw, rh) {
 	}
 }
 var m_baseAudioUrl = 'https://github.com/LimeSlime888/mis------./raw/refs/heads/main/audio/';
-var m_audioAreas = [
-	{
-		displayName: 'abandoned mall',
-		name: 'abandoned%20mall',
-		x: 39992, y: -40002.625,
-		w: 8, h: 10,
-		hasAmbience: true
+var m_audioAreas = [];
+var m_audioAreasString;
+async function m_updateAudioAreas() {
+	m_audioAreasString = await fetch("https://api.github.com/repos/LimeSlime888/mis------./contents/audio_areas.json?raw=true").then(e=>e.json());
+	m_audioAreasString = atob(m_audioAreasString.content);
+	let json = JSON.parse(m_audioAreasString);
+	m_audioAreas.splice(0);
+	for (let area of json) {
+		m_audioAreas.push(area);
 	}
-];
+}
+m_updateAudioAreas();
 var m_rolloffMin = 4;
 var m_rolloffMax = 12;
 var m_updateAudioAborts = 0;
 function m_updateAudio() {
-	if (!w.ui.m_audioModal || !m_ambience || !m_music || !m_ambienceVolumeSlider || !m_musicVolumeSlider) return false;
+	if (!m_audioAreas.length || !w.ui.m_audioModal || !m_ambience || !m_music || !m_ambienceVolumeSlider || !m_musicVolumeSlider) return false;
 	let [x, y] = [-positionX/tileW, -positionY/tileH];
 	let closestArea;
 	let closestDistance = Infinity;
