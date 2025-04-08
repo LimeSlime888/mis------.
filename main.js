@@ -244,7 +244,8 @@ async function m_updateAudioLoop() {
 	let a = ++m_updateAudioAborts;
 	while (a == m_updateAudioAborts) {
 		m_updateAudio();
-		await sleep(10);
+		if (window.sleep) await sleep(10);
+		else await new Promise(r=>setTimeout(r, 10));
 	}
 }
 m_updateAudioLoop();
