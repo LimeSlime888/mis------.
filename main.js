@@ -120,34 +120,130 @@ function m_onmove(e) {
 	} else if (m_safeguard && info.protection > 0) { removeCursor() }
 }
 w.on('cursorMove', m_onmove);
-var m_ambience;
-var m_music;
-var m_ambienceInfo;
-var m_musicInfo;
+var m_ambience, m_ambienceInfo, m_ambienceCanPlay, m_ambienceVolumeSlider;
+var m_music, m_musicInfo, m_musicCanPlay, m_musicVolumeSlider;
 function m_makeAudioModal() {
-    let modal = new Modal();
-    modal.createForm();
-    modal.inputField.style.gridTemplateColumns = '';
-    m_ambience = new Audio();
-    m_ambience.loop = true;
+	let modal = new Modal();
+	modal.createForm();
+	modal.inputField.style.gridTemplateColumns = '';
+	modal.formTitle.style.fontWeight = 'bold';
+	modal.formTitle.style.fontSize = 'large';
+	modal.formTitle.style.marginBottom = '12px';
+	m_ambience = new Audio();
+	m_ambience.loop = true;
 	m_ambience.controls = true;
-    let ainfob = document.createElement('b');
-    ainfob.innerText = 'ambience: ';
-    m_ambienceInfo = document.createElement('span');
-    m_music = new Audio();
-    m_music.loop = true;
+	m_ambience.addEventListener('loadstart', ()=>m_ambienceCanPlay=false);
+	m_ambience.addEventListener('canplay', ()=>m_ambienceCanPlay=true);
+	m_ambienceVolumeSlider = document.createElement('input');
+	m_ambienceVolumeSlider.type = 'range';
+	m_ambienceVolumeSlider.min = 0;
+	m_ambienceVolumeSlider.max = 1;
+	m_ambienceVolumeSlider.step = 1/128;
+	let ainfob = document.createElement('b');
+	ainfob.innerText = 'ambience: ';
+	m_ambienceInfo = document.createElement('span');
+	m_music = new Audio();
+	m_music.loop = true;
 	m_music.controls = true;
-    let minfob = document.createElement('b');
-    minfob.innerText = 'music: ';
-    m_musicInfo = document.createElement('span');
-    modal.inputField.append(
-        m_ambience, ainfob, m_ambienceInfo,
-        m_music, minfob, m_musicInfo,
-    );
-    return w.ui.m_audioModal = modal;
+	m_music.addEventListener('loadstart', ()=>m_musicCanPlay=false);
+	m_music.addEventListener('canplay', ()=>m_musicCanPlay=true);
+	m_musicVolumeSlider = document.createElement('input');
+	m_musicVolumeSlider.type = 'range';
+	m_musicVolumeSlider.min = 0;
+	m_musicVolumeSlider.max = 1;
+	m_musicVolumeSlider.step = 1/128;
+	let minfob = document.createElement('b');
+	minfob.innerText = 'music: ';
+	m_musicInfo = document.createElement('span');
+	modal.inputField.append(
+		m_ambience, m_ambienceVolumeSlider, ainfob, m_ambienceInfo,
+		m_music, m_musicVolumeSlider, minfob, m_musicInfo,
+	);
+	return w.ui.m_audioModal = modal;
 }
 m_makeAudioModal();
 menu.addOption('Ambience/music info', ()=>w.ui.m_audioModal.open());
+function distanceFromRectangle(px, py, rx, ry, rw, rh) {
+	if ([px, py, rx, ry, rw, rh].some(isNaN)) return Infinity;
+	if (px < rx) {
+		if (py < ry) {
+			return Math.sqrt((px-rx)**2 + (py-ry)**2);
+		} else if (py > ry + rh) {
+			return Math.sqrt((px-rx)**2 + (py-ry-rh)**2);
+		} else {
+			return rx - px;
+		}
+	} else if (px > rx + rw) {
+		if (py < ry) {
+			return Math.sqrt((px-rx-rw)**2 + (py-ry)**2);
+		} else if (py > ry + rh) {
+			return Math.sqrt((px-rx-rw)**2 + (py-ry-rh)**2);
+		} else {
+			return px - rx - rw;
+		}
+	} else {
+		if (py < ry) {
+			return ry - py;
+		} else if (py > ry + rh) {
+			return py - ry - rh;
+		} else {
+			return 0;
+		}
+	}
+}
+var m_baseAudioUrl = 'https://github.com/LimeSlime888/mis------./raw/refs/heads/main/audio/';
+var m_audioAreas = [
+	{
+		displayName: 'abandoned mall',
+		name: 'abandoned%20mall',
+		x: 39992, y: -40002.625,
+		w: 8, h: 10,
+		hasAmbience: true
+	}
+];
+var m_rolloffMin = 4;
+var m_rolloffMax = 12;
+var m_updateAudioAborts = 0;
+function m_updateAudio() {
+	if (!w.ui.m_audioModal || !m_ambience || !m_music || !m_ambienceVolumeSlider || !m_musicVolumeSlider) return false;
+	let [x, y] = [-positionX/tileW, -positionY/tileH];
+	let closestArea;
+	let closestDistance = Infinity;
+	for (let area of m_audioAreas) {
+		let distance = distanceFromRectangle(x, y, area.x, area.y, area.w, area.h);
+		if (distance < closestDistance) {
+			closestArea = area;
+			closestDistance = distance;
+		}
+	}
+	if (closestDistance < m_rolloffMax && closestArea) {
+		w.ui.m_audioModal.setFormTitle(closestArea.displayName ?? closestArea.name);
+		if (closestArea.hasAmbience) {
+			let url = m_baseAudioUrl + '(a)%20' + closestArea.name + '.mp3';
+			if (m_ambience.src != url) m_ambience.src = url;
+			if (m_ambience.paused && m_ambienceCanPlay) m_ambience.play();
+			m_ambience.volume = Math.min(1, (1 - (closestDistance-m_rolloffMin)/(m_rolloffMax-m_rolloffMin)) * m_ambienceVolumeSlider.value);
+		}
+		if (closestArea.hasMusic) {
+			let url = m_baseAudioUrl + '(m)%20' + closestArea.name + '.mp3';
+			if (m_music.src != url) m_music.src = url;
+			if (m_music.paused && m_musicCanPlay) m_music.play();
+			m_music.volume = Math.min(1, (1 - (closestDistance-m_rolloffMin)/(m_rolloffMax-m_rolloffMin)) * m_ambienceVolumeSlider.value);
+		}
+	} else {
+		w.ui.m_audioModal.setFormTitle('void');
+		m_ambience.src = '';
+	}
+}
+async function m_updateAudioLoop() {
+	let a = ++m_updateAudioAborts;
+	while (a == m_updateAudioAborts) {
+		m_updateAudio();
+		await sleep(10);
+	}
+}
+m_updateAudioLoop();
+unloadTilesAuto = false;
 var m_fetchDataRaw;
 var m_fetchData;
 async function m_refetch() {
