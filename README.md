@@ -6,3 +6,5 @@ The script also uses modules from [owot-funbox](https://github.com/LimeSlime888/
 When run in the world, the typed text will adjust automatically to the environment, and deleting text will reveal a background.
 
 Trying to hover over a link with the text cursor will also send you to its location and place your cursor there automatically.
+
+Having the centre of your screen less than 12 tiles from an environment will also play its ambience and music.
