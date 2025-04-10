@@ -10,4 +10,9 @@
 	"hasAmbience": true,
 	"x": 39988, "y": -60003,
 	"w": 16, "h": 4
+},{
+	"displayName": "winter bridge",
+	"name": "winter%20bridge",
+	"x": 506.8125, "y": -1.875,
+	"w": 11.9375, "h": 3
 }]
