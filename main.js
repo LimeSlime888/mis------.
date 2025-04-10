@@ -254,13 +254,26 @@ m_updateAudioLoop();
 unloadTilesAuto = false;
 var m_fetchDataRaw;
 var m_fetchData;
+var m_fetches;
 async function m_refetch() {
 	m_fetchDataRaw = await fetch("https://api.github.com/repos/LimeSlime888/mis------./contents/fetch_areas.txt?raw=true").then(e=>e.json());
 	m_fetchDataRaw = atob(m_fetchDataRaw.content);
 	m_fetchData = m_fetchDataRaw.split('\n');
 	m_fetchData = m_fetchData.map(e=>e.split(','));
+	m_fetches = [];
 	for (let range of m_fetchData) {
-	  network.fetch({minX: range[0], maxX: range[1], minY: range[2], maxY: range[3]});
+		let [minX, maxX, minY, maxY] = range.slice(0, 4).map(e=>+e);
+		if ([minX, maxX, minY, maxY].some(isNaN)) continue;
+		if (maxX < minX) {
+			console.warn('maxX < minX ('+range.slice(0,4).join(',')+')');
+			[maxX, minX] = [minX, maxX];
+		}
+		if (maxY < minY) {
+			console.warn('maxY < minY ('+range.slice(0,4).join(',')+')');
+			[maxY, minY] = [minY, maxY];
+		}
+		m_fetches.push({minX, maxX, minY, maxY});
 	}
+	network.fetch(m_fetches);
 }
 m_refetch();
