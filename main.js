@@ -229,16 +229,16 @@ function m_updateAudio() {
 			if (m_ambience.src != url) m_ambience.src = url;
 			if (m_ambience.paused && m_ambienceCanPlay) m_ambience.play();
 			m_ambience.volume = Math.min(1, (1 - (closestDistance-m_rolloffMin)/(m_rolloffMax-m_rolloffMin)) * m_ambienceVolumeSlider.value);
-		}
+		} else { m_ambience.pause() }
 		if (closestArea.hasMusic) {
 			let url = m_baseAudioUrl + '(m)%20' + closestArea.name + '.mp3';
 			if (m_music.src != url) m_music.src = url;
 			if (m_music.paused && m_musicCanPlay) m_music.play();
 			m_music.volume = Math.min(1, (1 - (closestDistance-m_rolloffMin)/(m_rolloffMax-m_rolloffMin)) * m_ambienceVolumeSlider.value);
-		}
+		} else { m_music.pause() }
 	} else {
 		w.ui.m_audioModal.setFormTitle('void');
-		m_ambience.src = '';
+		m_ambience.pause(); m_music.pause()
 	}
 }
 async function m_updateAudioLoop() {
