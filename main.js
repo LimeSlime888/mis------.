@@ -35,6 +35,8 @@ function m_writemod(e) {
 		e.bgColor = bgChar.bgColor;
 		if (e.char.match(/\s/) || e.char == '\b') {
 			e.char = bgChar.char; e.color = bgChar.color;
+		} else {
+			if (!(e.color || e.bgColor)) e.color = 0xffffff;
 		}
 	}
 	let r = (e.color>>16)&255;
