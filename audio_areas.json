@@ -3,16 +3,22 @@
 	"name": "abandoned%20mall",
 	"hasAmbience": true,
 	"x": 39992, "y": -40002.625,
-	"w": 8, "h": 10
+	"w": 8, "h": 10,
+	"ambienceText": "lime.owot"
 },{
 	"displayName": "mall rooftop",
 	"name": "mall%20rooftop",
 	"hasAmbience": true,
 	"x": 39988, "y": -60003,
-	"w": 16, "h": 4
+	"w": 16, "h": 4,
+	"ambienceText": "lime.owot"
 },{
 	"displayName": "winter bridge",
 	"name": "winter%20bridge",
 	"x": 506.8125, "y": -1.875,
-	"w": 11.9375, "h": 3
+	"w": 11.9375, "h": 3,
+	"ambienceText": "lime.owot",
+	"musicText": "lime.music - winter bridge",
+	"musicItalic": true,
+	"musicLink": "about:blank"
 }]

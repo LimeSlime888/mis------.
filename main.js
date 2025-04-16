@@ -1,5 +1,7 @@
 fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/owotutilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
 fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/utilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
+fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/owotutilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
+fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/utilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
 w.nightMode = 1;
 elm.owot.classList.add('nightmode');
 var m_lookupDiv64 = "0abcdefghijklmnopqrstuvwxyzαβγδεζηθικλμνξøπρςτυφχψωϗϐϑϒϕϖϙϛϝϟϡϣϥϧABCDEFGHIJKLMNOPQRSTUVWXYZÆʙΓΔɞʘŋΘıʞΛɱʌΞØΠþΣʇʊΦʔΨΩϏЂЄЉЊЋϘϚϜϞϠϢϤϦ";
@@ -142,9 +144,11 @@ function m_makeAudioModal() {
 	m_ambienceVolumeSlider.min = 0;
 	m_ambienceVolumeSlider.max = 1;
 	m_ambienceVolumeSlider.step = 1/128;
+	let ainfoc = document.createElement('span');
 	let ainfob = document.createElement('b');
 	ainfob.innerText = 'ambience: ';
 	m_ambienceInfo = document.createElement('span');
+	ainfoc.append(ainfob, m_ambienceInfo);
 	m_music = new Audio();
 	m_music.loop = true;
 	m_music.controls = true;
@@ -155,12 +159,14 @@ function m_makeAudioModal() {
 	m_musicVolumeSlider.min = 0;
 	m_musicVolumeSlider.max = 1;
 	m_musicVolumeSlider.step = 1/128;
+	let minfoc = document.createElement('span');
 	let minfob = document.createElement('b');
 	minfob.innerText = 'music: ';
 	m_musicInfo = document.createElement('span');
+	minfoc.append(minfob, m_musicInfo);
 	modal.inputField.append(
-		m_ambience, m_ambienceVolumeSlider, ainfob, m_ambienceInfo,
-		m_music, m_musicVolumeSlider, minfob, m_musicInfo,
+		m_ambience, m_ambienceVolumeSlider, ainfoc,
+		m_music, m_musicVolumeSlider, minfoc,
 	);
 	return w.ui.m_audioModal = modal;
 }
@@ -197,6 +203,7 @@ function distanceFromRectangle(px, py, rx, ry, rw, rh) {
 var m_baseAudioUrl = 'https://github.com/LimeSlime888/mis------./raw/refs/heads/main/audio/';
 var m_audioAreas = [];
 var m_audioAreasString;
+var m_areaChangeCheck;
 async function m_updateAudioAreas() {
 	m_audioAreasString = await fetch("https://api.github.com/repos/LimeSlime888/mis------./contents/audio_areas.json?raw=true").then(e=>e.json());
 	m_audioAreasString = atob(m_audioAreasString.content);
@@ -211,7 +218,7 @@ var m_rolloffMin = 4;
 var m_rolloffMax = 12;
 var m_updateAudioAborts = 0;
 function m_updateAudio() {
-	if (!m_audioAreas.length || !w.ui.m_audioModal || !m_ambience || !m_music || !m_ambienceVolumeSlider || !m_musicVolumeSlider) return false;
+	if (!m_audioAreas.length || !w.ui.m_audioModal) return false;
 	let [x, y] = [-positionX/tileW, -positionY/tileH];
 	let closestArea;
 	let closestDistance = Infinity;
@@ -240,6 +247,44 @@ function m_updateAudio() {
 		w.ui.m_audioModal.setFormTitle('void');
 		m_ambience.pause(); m_music.pause()
 	}
+	if (closestArea != m_areaChangeCheck) {
+		if (closestArea) {
+			let ambienceElm, musicElm;
+			m_ambienceInfo.innerText = '';
+			m_musicInfo.innerText = '';
+			if (closestArea.ambienceText) {
+				if (closestArea.ambienceLink) {
+					ambienceElm = document.createElement('a');
+					ambienceElm.href = closestArea.ambienceLink;
+					ambienceElm.target = '_blank';
+					ambienceElm.rel = 'noopener noreferrer';
+					ambienceElm.style.textDecoration = 'underline';
+					if (closestArea.ambienceItalic) ambienceElm.style.fontStyle = 'italic';
+					ambienceElm.innerText = closestArea.ambienceText;
+				} else if (closestArea.ambienceItalic) {
+					ambienceElm = document.createElement('i');
+					ambienceElm.innerText = closestArea.ambienceText;
+				} else ambienceElm = new Text(closestArea.ambienceText);
+				m_ambienceInfo.append(ambienceElm);
+			}
+			if (closestArea.musicText) {
+				if (closestArea.musicLink) {
+					musicElm = document.createElement('a');
+					musicElm.href = closestArea.musicLink;
+					musicElm.target = '_blank';
+					musicElm.rel = 'noopener noreferrer';
+					musicElm.style.textDecoration = 'underline';
+					if (closestArea.musicItalic) musicElm.style.fontStyle = 'italic';
+					musicElm.innerText = closestArea.musicText;
+				} else if (closestArea.musicItalic) {
+					musicElm = document.createElement('i');
+					musicElm.innerText = closestArea.musicText;
+				} else musicElm = new Text(closestArea.musicText);
+				m_musicInfo.append(musicElm);
+			}
+		} else { m_ambienceInfo.innerText = ''; m_musicInfo.innerText = '' }
+	}
+	m_areaChangeCheck = closestArea;
 }
 async function m_updateAudioLoop() {
 	let a = ++m_updateAudioAborts;
@@ -276,3 +321,4 @@ async function m_refetch() {
 	network.fetch(m_fetches);
 }
 m_refetch();
+w.doGoToCoord(1633.75, 1600);
