@@ -1,7 +1,5 @@
 fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/owotutilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
 fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/utilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
-fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/owotutilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
-fetch("https://api.github.com/repos/LimeSlime888/owot-funbox/contents/utilities.js?raw=true").then(e=>e.json()).then(e=>eval(atob(e.content)));
 w.nightMode = 1;
 elm.owot.classList.add('nightmode');
 var m_lookupDiv64 = "0abcdefghijklmnopqrstuvwxyzαβγδεζηθικλμνξøπρςτυφχψωϗϐϑϒϕϖϙϛϝϟϡϣϥϧABCDEFGHIJKLMNOPQRSTUVWXYZÆʙΓΔɞʘŋΘıʞΛɱʌΞØΠþΣʇʊΦʔΨΩϏЂЄЉЊЋϘϚϜϞϠϢϤϦ";
@@ -247,7 +245,7 @@ function m_updateAudio() {
 		w.ui.m_audioModal.setFormTitle('void');
 		m_ambience.pause(); m_music.pause()
 	}
-	if (closestArea != m_areaChangeCheck) {
+	if ((closestDistance < m_rollOffMax ? closestArea : undefined) != m_areaChangeCheck) {
 		if (closestArea) {
 			let ambienceElm, musicElm;
 			m_ambienceInfo.innerText = '';
@@ -284,7 +282,7 @@ function m_updateAudio() {
 			}
 		} else { m_ambienceInfo.innerText = ''; m_musicInfo.innerText = '' }
 	}
-	m_areaChangeCheck = closestArea;
+	m_areaChangeCheck = closestDistance < m_rolloffMax ? closestArea : undefined;
 }
 async function m_updateAudioLoop() {
 	let a = ++m_updateAudioAborts;
