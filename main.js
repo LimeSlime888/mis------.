@@ -247,7 +247,7 @@ function m_updateAudio() {
 		w.ui.m_audioModal.setFormTitle('void');
 		m_ambience.pause(); m_music.pause()
 	}
-	if ((closestDistance < m_rollOffMax ? closestArea : undefined) != m_areaChangeCheck) {
+	if ((closestDistance < m_rolloffMax ? closestArea : undefined) != m_areaChangeCheck) {
 		if (closestArea) {
 			let ambienceElm, musicElm;
 			m_ambienceInfo.innerText = '';
