@@ -239,7 +239,7 @@ function m_updateAudio() {
 			let url = m_baseAudioUrl + '(m)%20' + encodeURIComponent(closestArea.name) + '.ogg';
 			if (m_music.src != url) m_music.src = url;
 			if (m_music.paused && m_musicCanPlay) m_music.play();
-			m_music.volume = Math.min(1, (1 - (closestDistance-m_rolloffMin)/(m_rolloffMax-m_rolloffMin)) * m_ambienceVolumeSlider.value);
+			m_music.volume = Math.min(1, (1 - (closestDistance-m_rolloffMin)/(m_rolloffMax-m_rolloffMin)) * m_musicVolumeSlider.value);
 		} else { m_music.pause() }
 	} else {
 		w.ui.m_audioModal.setFormTitle('void');
