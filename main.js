@@ -64,15 +64,6 @@ function m_writemod(e) {
 			[rb, gb, bb] = [rb*brightness, gb*brightness, bb*brightness];
 		}
 	}
-	if (brightChar.color) {
-		let r2 = ((brightChar.color>>16)&255) / 255;
-		let g2 = ((brightChar.color>>8)&255) / 255;
-		let b2 = (brightChar.color&255) / 255;
-		[r, g, b] = [r*r2, g*g2, b*b2];
-		if (hasbg) {
-			[rb, gb, bb] = [rb*r2, gb*g2, bb*b2];
-		}
-	}
 	if (brightChar.bgColor > 0) {
 		let r2 = (brightChar.bgColor>>16)&255;
 		let g2 = (brightChar.bgColor>>8)&255;
@@ -80,6 +71,15 @@ function m_writemod(e) {
 		[r, g, b] = [r+r2, g+g2, b+b2];
 		if (hasbg) {
 			[rb, gb, bb] = [rb+r2, gb+g2, bb+b2];
+		}
+	}
+	if (brightChar.color) {
+		let r2 = ((brightChar.color>>16)&255) / 255;
+		let g2 = ((brightChar.color>>8)&255) / 255;
+		let b2 = (brightChar.color&255) / 255;
+		[r, g, b] = [r*r2, g*g2, b*b2];
+		if (hasbg) {
+			[rb, gb, bb] = [rb*r2, gb*g2, bb*b2];
 		}
 	}
 	[r, g, b] = [r, g, b].map(x=>Math.min(255, Math.floor(x)));
