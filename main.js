@@ -31,10 +31,16 @@ function m_writemod(e) {
 	let brightness = m_decodeChar(brightChar.char);
 	let opacChar = getCharInfoXY(x, y-98304);
 	let opacity = m_decodeChar(opacChar.char);
+	let bgBrightChar = getCharInfoXY(x, y-131072);
+	let bgBrightness = m_decodeChar(bgBrightChar.char);
+	let usingBgChar = false;
+	let usingBgBgColor = false;
 	if (e.bgColor == -1 || isNaN(e.bgColor)) {
 		e.bgColor = bgChar.bgColor;
+		usingBgBgColor = true;
 		if (e.char.match(/\s/) || e.char == '\b') {
 			e.char = bgChar.char; e.color = bgChar.color;
+			usingBgChar = true;
 		} else {
 			if (!(e.color || e.bgColor)) e.color = 0xffffff;
 		}
@@ -58,27 +64,66 @@ function m_writemod(e) {
 			[rb, gb, bb] = [rb+(r2-rb)*opacity, gb+(g2-gb)*opacity, bb+(b2-bb)*opacity];
 		}
 	}
-	if (!isNaN(brightness) || brightness == 1) {
+	if (usingBgBgColor && (!isNaN(bgBrightness) || bgBrightness == 1)) {
+		[rb, gb, bb] = [rb*bgBrightness, gb*bgBrightness, bb*bgBrightness];
+		if (usingBgChar) {
+			[r, g, b] = [r*bgBrightness, g*bgBrightness, b*bgBrightness];
+		} else if (!isNaN(brightness) || brightness == 1) {
+			[r, g, b] = [r*brightness, g*brightness, b*brightness];
+		}
+	} else if (!isNaN(brightness) || brightness == 1) {
 		[r, g, b] = [r*brightness, g*brightness, b*brightness];
 		if (hasbg) {
 			[rb, gb, bb] = [rb*brightness, gb*brightness, bb*brightness];
 		}
 	}
-	if (brightChar.bgColor > 0) {
-		let r2 = (brightChar.bgColor>>16)&255;
-		let g2 = (brightChar.bgColor>>8)&255;
-		let b2 = brightChar.bgColor&255;
+	if (usingBgBgColor && bgBrightChar.bgColor > 0) {
+		let col = bgBrightChar.bgColor;
+		let r2 = (col>>16)&255;
+		let g2 = (col>>8)&255;
+		let b2 = col&255;
+		[rb, gb, bb] = [rb+r2, gb+g2, bb+b2];
+		if (usingBgChar) {
+			[r, g, b] = [r+r2, g+g2, b+b2];
+		} else if (brightChar.bgColor > 0) {
+			let col = brightChar.bgColor;
+			let r2 = (col>>16)&255;
+			let g2 = (col>>8)&255;
+			let b2 = col&255;
+			[r, g, b] = [r+r2, g+g2, b+b2];
+		}
+	} else if (brightChar.bgColor > 0) {
+		let col = brightChar.bgColor;
+		let r2 = (col>>16)&255;
+		let g2 = (col>>8)&255;
+		let b2 = col&255;
 		[r, g, b] = [r+r2, g+g2, b+b2];
-		if (hasbg) {
+		if (hasbg && brightChar.bgColor > 0) {
 			[rb, gb, bb] = [rb+r2, gb+g2, bb+b2];
 		}
 	}
-	if (brightChar.color) {
-		let r2 = ((brightChar.color>>16)&255) / 255;
-		let g2 = ((brightChar.color>>8)&255) / 255;
-		let b2 = (brightChar.color&255) / 255;
+	if (usingBgBgColor && bgBrightChar.color) {
+		let col = bgBrightChar.color;
+		let r2 = ((col>>16)&255) / 255;
+		let g2 = ((col>>8)&255) / 255;
+		let b2 = (col&255) / 255;
+		[rb, gb, bb] = [rb*r2, gb*g2, bb*b2];
+		if (usingBgChar) {
+			[r, g, b] = [r*r2, g*g2, b*b2];
+		} else if (brightChar.color) {
+			let col = brightChar.color;
+			let r2 = ((col>>16)&255) / 255;
+			let g2 = ((col>>8)&255) / 255;
+			let b2 = (col&255) / 255;
+			[r, g, b] = [r*r2, g*g2, b*b2];
+		}
+	} else if (brightChar.color) {
+		let col = brightChar.color;
+		let r2 = ((col>>16)&255) / 255;
+		let g2 = ((col>>8)&255) / 255;
+		let b2 = (col&255) / 255;
 		[r, g, b] = [r*r2, g*g2, b*b2];
-		if (hasbg) {
+		if (hasbg && brightChar.color) {
 			[rb, gb, bb] = [rb*r2, gb*g2, bb*b2];
 		}
 	}
