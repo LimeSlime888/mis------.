@@ -12,6 +12,7 @@
 	"w": 16, "h": 4
 },{
 	"name": "winter bridge",
+	"hasAmbience": true,
 	"ambienceText": "lime.owot",
 	"hasMusic": true,
 	"musicText": "lime.music - winter bridge",
