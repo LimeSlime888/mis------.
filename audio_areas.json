@@ -16,8 +16,14 @@
 	"ambienceText": "lime.owot",
 	"hasMusic": true,
 	"musicText": "lime.music - winter bridge",
-	"musicItalic": true,
 	"musicLink": "about:blank",
 	"x": 506.8125, "y": -1.875,
 	"w": 11.9375, "h": 3
+},{
+	"name": "clouds",
+	"hasMusic": true,
+	"musicText": "lime.music - clouds",
+	"musicLink": "about:blank",
+	"x": 39989, "y": -80012,
+	"w": 14, "h": 13
 }]
